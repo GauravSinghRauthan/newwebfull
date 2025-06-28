@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
-    username:{
+    userName:{
         type: String,
         lowercase: true,
         require: true,
@@ -30,10 +30,10 @@ const userSchema = new Schema({
         require: true
     },
 
-    Coverimage:{
+    coverImage:{
         type: String
     },
-    username:[
+    movieHistory:[
         {
             type: Schema.Types.ObjectId,
             ref: "video"
@@ -45,21 +45,20 @@ const userSchema = new Schema({
     },
     refreshToken:{
         type: String,
-        require: true
     }
 },{
     timestamps: true
 })
 
 userSchema.pre("save",async function (next) {
-    if(!this.isModified(this.Password))next();
+    if(!this.isModified("Password"))return next();
 
     this.Password = await bcrypt.hash(this.Password,10)
     next()
 })
 
-userSchema.methods.isPasswordCorrect = async function(password){
-    return await bcrypt.compare(password, this.password)
+userSchema.methods.isPasswordCorrect = async function(Password){
+    return await bcrypt.compare(Password, this.Password)
 }
 
 userSchema.methods.generateAccessToken = function (){
@@ -91,4 +90,4 @@ userSchema.methods.generateRefreshToken = function (){
     )
 }
 
-export const user = mongoose.model('user',userSchema)
+export const User = mongoose.model('user',userSchema)

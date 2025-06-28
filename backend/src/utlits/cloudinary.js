@@ -1,9 +1,10 @@
 import { response } from "express";
-import {v2 as cloudinary} from cloudinary
+import {v2 as cloudinary} from "cloudinary"
+import fs from 'fs';
 
 // configuration
         cloudinary.config({
-            cloud_name : process.env.cloud_name,
+            cloud_name : process.env.CLOUD_NAME,
             api_key: process.env.api_key,
             api_secret: process.env.api_secret
         })
@@ -19,11 +20,12 @@ const cloudinaryLink = async function (localFilePath) {
 
         // file has uploaded successfully
 
-        console.log("file has uploaded in cloudinary",response.url);
-        return response
+        console.log("file has uploaded in cloudinary",uploadResult.url);
+        return uploadResult
     } catch (error) {
-        fs.unlinks(localFilePath)
+        fs.unlinkSync(localFilePath)
         // locally saved tempory file as upload operation file
+    
         return null
     }
     
